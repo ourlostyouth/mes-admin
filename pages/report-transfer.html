@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>移交下道 - MES管理系统</title>
+<link rel="stylesheet" href="../assets/base/index.css">
+<style>
+  /* Module page specific: full height, no sidebar offset */
+  html, body {
+    height: 100%;
+    background: #f0f2f5;
+  }
+  .module-content {
+    display: block !important;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+  }
+</style>
+</head>
+<body>
+<div class="module-content">
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon orange">
+                <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="transferWaitingCount">3</div>
+            <div class="stat-label">待移交</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon purple">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="transferDoneCount">21</div>
+            <div class="stat-label">已移交</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon red">
+                <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="transferRejectCount">1</div>
+            <div class="stat-label">被退回</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon blue">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="transferTotalCount">25</div>
+            <div class="stat-label">总计</div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div class="table-header">
+            <div class="table-title">移交下道记录</div>
+            <div class="table-actions">
+              <input type="text" id="transferSearchInput" placeholder="搜索移交单号/图号..." oninput="searchTransferData()" style="padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; margin-right: 12px; width: 280px; outline: none;">
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>移交单号</th>
+                  <th>图号</th>
+                  <th>移出工序</th>
+                  <th>接收工序</th>
+                  <th>移交数量</th>
+                  <th>状态</th>
+                  <th>移交人</th>
+                  <th>接收人</th>
+                  <th>移交时间</th>
+                  <th>来源完工汇报</th>
+                </tr>
+              </thead>
+              <tbody id="transferTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      
+</div>
+
+
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<script src="../assets/base/data.js"></script>
+<script src="../assets/base/index.js"></script>
+
+<script src="../assets/report-transfer/data.js"></script>
+<script src="../assets/report-transfer/index.js"></script>
+<script>
+  // Initialize module on load
+  renderTransferTable();
+</script>
+</body>
+</html>

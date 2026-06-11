@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工作台 - MES管理系统</title>
+<link rel="stylesheet" href="../assets/base/index.css">
+<style>
+  /* Module page specific: full height, no sidebar offset */
+  html, body {
+    height: 100%;
+    background: #f0f2f5;
+  }
+  .module-content {
+    display: block !important;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+  }
+</style>
+</head>
+<body>
+<div class="module-content">
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon blue">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value">128</div>
+            <div class="stat-label">今日工单数</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon green">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value">8,542</div>
+            <div class="stat-label">完成数量</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon orange">
+                <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value">23</div>
+            <div class="stat-label">异常报工</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon red">
+                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value">3</div>
+            <div class="stat-label">设备故障</div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div class="table-header">
+            <div class="table-title">今日报工记录</div>
+            <div class="table-actions">
+              <button class="btn btn-secondary">导出</button>
+              <button class="btn btn-primary">新增</button>
+            </div>
+          </div>
+          <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>工单号</th>
+                <th>产品图号</th>
+                <th>工序</th>
+                <th>操作员</th>
+                <th>完成数量</th>
+                <th>报废数量</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>WO-20240321-001</td>
+                <td>763</td>
+                <td>成型</td>
+                <td>张三</td>
+                <td>585</td>
+                <td>15</td>
+                <td><span class="status-badge normal">已完成</span></td>
+                <td><a class="action-link">查看</a></td>
+              </tr>
+              <tr>
+                <td>WO-20240321-002</td>
+                <td>665</td>
+                <td>瓷检</td>
+                <td>李四</td>
+                <td>420</td>
+                <td>8</td>
+                <td><span class="status-badge warning">进行中</span></td>
+                <td><a class="action-link">查看</a></td>
+              </tr>
+              <tr>
+                <td>WO-20240321-003</td>
+                <td>801</td>
+                <td>安装</td>
+                <td>王五</td>
+                <td>500</td>
+                <td>0</td>
+                <td><span class="status-badge normal">已完成</span></td>
+                <td><a class="action-link">查看</a></td>
+              </tr>
+              <tr>
+                <td>WO-20240321-004</td>
+                <td>763</td>
+                <td>成型</td>
+                <td>张三</td>
+                <td>320</td>
+                <td>45</td>
+                <td><span class="status-badge error">异常</span></td>
+                <td><a class="action-link">查看</a></td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      
+</div>
+
+
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<script src="../assets/base/data.js"></script>
+<script src="../assets/base/index.js"></script>
+<script src="../assets/dashboard/data.js"></script>
+<script src="../assets/dashboard/index.js"></script>
+
+<script>
+  // Initialize module on load
+  
+</script>
+</body>
+</html>

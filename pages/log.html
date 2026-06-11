@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>报工修改日志 - MES管理系统</title>
+<link rel="stylesheet" href="../assets/base/index.css">
+<style>
+  /* Module page specific: full height, no sidebar offset */
+  html, body {
+    height: 100%;
+    background: #f0f2f5;
+  }
+  .module-content {
+    display: block !important;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+  }
+</style>
+</head>
+<body>
+<div class="module-content">
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="reportModifyTodayCount">0</div>
+            <div class="stat-label">今日修改</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="reportModifyWeekCount">0</div>
+            <div class="stat-label">本周修改</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="reportModifyTotalCount">0</div>
+            <div class="stat-label">总记录数</div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div class="table-header">
+            <div class="table-title">报工修改日志</div>
+            <div class="table-actions">
+              <input type="text" id="logSearchInput" placeholder="搜索日志号/操作人/单据号..." oninput="searchReportLog()" style="padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; margin-right: 12px; width: 280px; outline: none;">
+              <select id="logModuleFilter" onchange="renderReportLogTable()" style="padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; margin-right: 12px;">
+                <option value="">全部类型</option>
+                <option value="来料接收">来料接收</option>
+                <option value="完工汇报">完工汇报</option>
+                <option value="移交下道">移交下道</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>日志编号</th>
+                <th>操作人</th>
+                <th>操作类型</th>
+                <th>单据类型</th>
+                <th>单据编号</th>
+                <th>修改内容</th>
+                <th>IP地址</th>
+                <th>操作时间</th>
+                <th>状态</th>
+              </tr>
+            </thead>
+            <tbody id="logTableBody">
+            </tbody>
+          </table>
+          </div>
+        </div>
+      
+</div>
+
+
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<script src="../assets/base/data.js"></script>
+<script src="../assets/base/index.js"></script>
+
+<script src="../assets/log/data.js"></script>
+<script src="../assets/log/index.js"></script>
+<script>
+  // Initialize module on load
+  renderReportLogTable();
+</script>
+</body>
+</html>

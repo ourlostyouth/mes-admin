@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>设备管理 - MES管理系统</title>
+<link rel="stylesheet" href="../assets/base/index.css">
+<style>
+  /* Module page specific: full height, no sidebar offset */
+  html, body {
+    height: 100%;
+    background: #f0f2f5;
+  }
+  .module-content {
+    display: block !important;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+  }
+</style>
+</head>
+<body>
+<div class="module-content">
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="eqTotalCount">11</div>
+            <div class="stat-label">设备总数</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#22c55e" id="eqNormalCount">8</div>
+            <div class="stat-label">正常运行</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#f97316" id="eqMaintainCount">2</div>
+            <div class="stat-label">需维护</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#ef4444" id="eqFaultCount">1</div>
+            <div class="stat-label">故障</div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div class="table-header">
+            <div class="table-title">设备列表</div>
+            <div class="table-actions">
+              <input type="text" id="eqSearchInput" placeholder="搜索设备名称/型号..." oninput="searchEquipment()" style="padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; margin-right: 12px; width: 240px; outline: none;">
+              <button class="btn btn-primary" onclick="openEquipmentModal()">新增设备</button>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>设备编号</th>
+                  <th>设备名称</th>
+                  <th>设备型号</th>
+                  <th>所属工序</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="equipmentTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      
+</div>
+
+
+<div class="modal-overlay" id="equipmentModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="equipmentModalTitle">新增设备</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-form-group">
+        <label>设备名称 <span style="color:#ef4444">*</span></label>
+        <input type="text" id="eqName" placeholder="请输入设备名称">
+      </div>
+      <div class="modal-form-group">
+        <label>设备型号 <span style="color:#ef4444">*</span></label>
+        <input type="text" id="eqModel" placeholder="请输入设备型号">
+      </div>
+      <div class="modal-form-group">
+        <label>所属工序</label>
+        <input type="text" id="eqProcess" placeholder="请输入所属工序">
+      </div>
+      <div class="modal-form-group">
+        <label>状态</label>
+        <select id="eqStatus">
+          <option value="正常">正常</option>
+          <option value="需维护">需维护</option>
+          <option value="故障">故障</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeEquipmentModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveEquipment()">确定</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- 删除确认模态框 -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-body">
+      <div class="delete-confirm-icon">
+        <svg viewBox="0 0 24 24" width="40" height="40" fill="#ef4444"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
+      </div>
+      <div class="delete-confirm-text">确定要删除吗？</div>
+      <div class="delete-confirm-hint" id="deleteConfirmHint">此操作不可恢复</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeDeleteModal()">取消</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">确定删除</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/base/data.js"></script>
+<script src="../assets/base/index.js"></script>
+
+<script src="../assets/equipment/data.js"></script>
+<script src="../assets/equipment/index.js"></script>
+<script>
+  // Initialize module on load
+  renderEquipmentTable();
+</script>
+</body>
+</html>

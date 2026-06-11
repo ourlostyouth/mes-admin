@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工序管理 - MES管理系统</title>
+<link rel="stylesheet" href="../assets/base/index.css">
+<style>
+  /* Module page specific: full height, no sidebar offset */
+  html, body {
+    height: 100%;
+    background: #f0f2f5;
+  }
+  .module-content {
+    display: block !important;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+  }
+</style>
+</head>
+<body>
+<div class="module-content">
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon blue">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="processTotal">6</div>
+            <div class="stat-label">工序总数</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon green">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="processActive">5</div>
+            <div class="stat-label">已启用</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon orange">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="processInactive">1</div>
+            <div class="stat-label">已停用</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon purple">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value">3</div>
+            <div class="stat-label">工艺类别</div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div class="table-header">
+            <div class="table-title">工序列表</div>
+            <div class="table-actions">
+              <input type="text" id="procSearchInput" placeholder="搜索工序名称..." oninput="searchProcess()" style="padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; margin-right: 12px; width: 240px; outline: none;">
+              <button class="btn btn-secondary">筛选</button>
+              <button class="btn btn-primary" onclick="openProcessModal()">新增工序</button>
+            </div>
+          </div>
+          <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 120px;">工序编号</th>
+                <th>工序名称</th>
+                <th>工序代码</th>
+                <th>所属车间</th>
+                <th>工序类别</th>
+                <th>标准工时(分钟)</th>
+                <th>设备要求</th>
+                <th>排序</th>
+                <th>状态</th>
+                <th style="width: 180px;">操作</th>
+              </tr>
+            </thead>
+            <tbody id="processTableBody"></tbody>
+          </table>
+          </div>
+        </div>
+      
+</div>
+
+
+<div class="modal-overlay" id="processModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="processModalTitle">新增工序</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-form-group">
+        <label>工序名称 <span style="color:#ef4444">*</span></label>
+        <input type="text" id="procName" placeholder="如：成型、修理、生检">
+      </div>
+      <div class="modal-form-group">
+        <label>工序代码 <span style="color:#ef4444">*</span></label>
+        <input type="text" id="procCode" placeholder="如：CX、XL、SJ">
+      </div>
+      <div class="modal-form-group">
+        <label>所属车间</label>
+        <input type="text" id="procWorkshop" placeholder="如：成型车间、上釉车间">
+      </div>
+      <div class="modal-form-group">
+        <label>工序类别</label>
+        <input type="text" id="procCategory" placeholder="如：成型工序、修理工序">
+      </div>
+      <div class="modal-form-group">
+        <label>标准工时（分钟）</label>
+        <input type="number" id="procStandardTime" placeholder="请输入标准工时">
+      </div>
+      <div class="modal-form-group">
+        <label>设备要求</label>
+        <input type="text" id="procEquipment" placeholder="如：成型机A/B">
+      </div>
+      <div class="modal-form-group">
+        <label>排序</label>
+        <input type="number" id="procSortOrder" placeholder="数字越小越靠前">
+      </div>
+      <div class="modal-form-group">
+        <label>状态</label>
+        <select id="procStatus">
+          <option value="启用">启用</option>
+          <option value="停用">停用</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeProcessModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveProcess()">确定</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- 删除确认模态框 -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-body">
+      <div class="delete-confirm-icon">
+        <svg viewBox="0 0 24 24" width="40" height="40" fill="#ef4444"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
+      </div>
+      <div class="delete-confirm-text">确定要删除吗？</div>
+      <div class="delete-confirm-hint" id="deleteConfirmHint">此操作不可恢复</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeDeleteModal()">取消</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">确定删除</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/base/data.js"></script>
+<script src="../assets/base/index.js"></script>
+
+<script src="../assets/process/data.js"></script>
+<script src="../assets/process/index.js"></script>
+<script>
+  // Initialize module on load
+  renderProcessTable();
+</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工厂建模 - MES管理系统</title>
+<link rel="stylesheet" href="../assets/base/index.css">
+<style>
+  /* Module page specific: full height, no sidebar offset */
+  html, body {
+    height: 100%;
+    background: #f0f2f5;
+  }
+  .module-content {
+    display: block !important;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+  }
+</style>
+</head>
+<body>
+<div class="module-content">
+
+        <div class="split-layout">
+          <div class="split-left">
+            <div class="split-left-header">
+              <div class="split-left-title">系统模块</div>
+            </div>
+            <div class="split-left-body" id="factoryTreeContainer"></div>
+          </div>
+          <div class="split-right">
+            <div class="split-right-header">
+              <div class="split-right-title" id="factoryRightTitle">模块配置</div>
+              <button class="btn-sm btn-sm-primary" id="factorySaveBtn" onclick="saveFactoryConfig()" style="display:none;">保存配置</button>
+            </div>
+            <div class="split-right-body" style="padding:0 24px 20px;">
+              <div id="factoryEmptyState" class="empty-state" style="height:300px;">
+                <svg viewBox="0 0 24 24" style="width:48px;height:48px;fill:#cbd5e1;margin-bottom:12px;"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                <div class="empty-state-text">请选择左侧模块查看配置详情</div>
+                <div class="empty-state-hint">管理PC端与PDA端模块配置</div>
+              </div>
+              <div id="factoryContentPanel" style="display:none;">
+                <div class="module-detail-section">
+                  <div class="module-detail-section-title">基本信息</div>
+                  <div class="config-form-grid" id="factoryBasicInfo"></div>
+                </div>
+                <div class="module-detail-section">
+                  <div class="module-detail-section-title">功能开关</div>
+                  <div class="function-switch-list" id="factoryFuncSwitches"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+</div>
+
+
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<script src="../assets/base/data.js"></script>
+<script src="../assets/base/index.js"></script>
+
+<script src="../assets/factory-modeling/data.js"></script>
+<script src="../assets/factory-modeling/index.js"></script>
+<script>
+  // Initialize module on load
+  renderFactoryTree();
+</script>
+</body>
+</html>

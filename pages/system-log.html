@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>操作日志 - MES管理系统</title>
+<link rel="stylesheet" href="../assets/base/index.css">
+<style>
+  /* Module page specific: full height, no sidebar offset */
+  html, body {
+    height: 100%;
+    background: #f0f2f5;
+  }
+  .module-content {
+    display: block !important;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+  }
+</style>
+</head>
+<body>
+<div class="module-content">
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">1,256</div>
+            <div class="stat-label">今日日志</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">3,428</div>
+            <div class="stat-label">本周日志</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#22c55e">12</div>
+            <div class="stat-label">活跃用户</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#f97316">98.5%</div>
+            <div class="stat-label">成功率</div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div class="table-header">
+            <div class="table-title">操作日志</div>
+            <div class="table-actions">
+              <input type="text" id="systemLogSearchInput" placeholder="搜索日志..." oninput="searchSystemLog()" style="padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; margin-right: 12px; width: 240px; outline: none;">
+              <select id="systemLogModuleFilter" onchange="renderSystemLogTable()" style="padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; margin-right: 12px;">
+                <option value="">全部模块</option>
+                <option value="计划管理">计划管理</option>
+                <option value="报工管理">报工管理</option>
+                <option value="设备管理">设备管理</option>
+                <option value="系统管理">系统管理</option>
+              </select>
+              <select id="systemLogTypeFilter" onchange="renderSystemLogTable()" style="padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; margin-right: 12px;">
+                <option value="">全部操作</option>
+                <option value="新增">新增</option>
+                <option value="编辑">编辑</option>
+                <option value="删除">删除</option>
+                <option value="查询">查询</option>
+              </select>
+              <button class="btn btn-secondary">导出</button>
+              <button class="btn btn-secondary">刷新</button>
+            </div>
+          </div>
+          <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>日志编号</th>
+                <th>操作人</th>
+                <th>操作模块</th>
+                <th>操作类型</th>
+                <th>操作内容</th>
+                <th>IP地址</th>
+                <th>操作时间</th>
+                <th>状态</th>
+              </tr>
+            </thead>
+            <tbody id="systemLogTableBody">
+            </tbody>
+          </table>
+          </div>
+        </div>
+      
+</div>
+
+
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<script src="../assets/base/data.js"></script>
+<script src="../assets/base/index.js"></script>
+
+<script src="../assets/system-log/data.js"></script>
+<script src="../assets/system-log/index.js"></script>
+<script>
+  // Initialize module on load
+  renderSystemLogTable();
+</script>
+</body>
+</html>

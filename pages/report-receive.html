@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>来料接收 - MES管理系统</title>
+<link rel="stylesheet" href="../assets/base/index.css">
+<style>
+  /* Module page specific: full height, no sidebar offset */
+  html, body {
+    height: 100%;
+    background: #f0f2f5;
+  }
+  .module-content {
+    display: block !important;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+  }
+</style>
+</head>
+<body>
+<div class="module-content">
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon orange">
+                <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="receivePendingCount">4</div>
+            <div class="stat-label">待接收</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon green">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="receiveDoneCount">18</div>
+            <div class="stat-label">已接收</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon red">
+                <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="receiveExceptionCount">2</div>
+            <div class="stat-label">异常</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <div class="stat-icon blue">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+              </div>
+            </div>
+            <div class="stat-value" id="receiveTotalCount">24</div>
+            <div class="stat-label">总计</div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div class="table-header">
+            <div class="table-title">来料接收记录</div>
+            <div class="table-actions">
+              <input type="text" id="receiveSearchInput" placeholder="搜索来料单号/图号/工序..." oninput="searchReceiveModuleData()" style="padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; margin-right: 12px; width: 280px; outline: none;">
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>来料单号</th>
+                  <th>图号</th>
+                  <th>产品名称</th>
+                  <th>接收工序</th>
+                  <th>上道工序</th>
+                  <th>来料数量</th>
+                  <th>验收数量</th>
+                  <th>拒收数量</th>
+                  <th>状态</th>
+                  <th>操作员</th>
+                  <th>操作时间</th>
+                </tr>
+              </thead>
+              <tbody id="receiveTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      
+</div>
+
+
+<div class="modal-overlay" id="planReportRelationModal">
+  <div class="modal" style="width: 1100px; max-width: 95%;">
+    <div class="modal-header">
+      <div class="modal-title" id="relationModalTitle">计划与报工关联</div>
+      <button class="modal-close" onclick="closeRelationModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+        <!-- 左侧:计划订单信息 -->
+        <div>
+          <div style="margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #e2e8f0;">
+            <div style="font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:8px;">生产订单信息</div>
+            <div id="relationPlanInfo"></div>
+          </div>
+          <div style="margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #e2e8f0;">
+            <div style="font-size:14px;font-weight:600;color:#475569;margin-bottom:8px;">关联的报工记录</div>
+            <div class="table-wrapper" style="max-height:400px;overflow-y:auto;overflow-x:auto;">
+              <table style="font-size:13px;">
+                <thead>
+                  <tr>
+                    <th>报工号</th>
+                    <th>工序</th>
+                    <th>数量</th>
+                    <th>合格数</th>
+                  </tr>
+                </thead>
+                <tbody id="relationReportTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- 右侧:中间子表明细 -->
+        <div>
+          <div style="margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #e2e8f0;">
+            <div style="font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:8px;">系统自动同步明细</div>
+            <div style="font-size:12px;color:#64748b;margin-bottom:8px;">自动拆分的报工明细,实现多对多关系</div>
+          </div>
+          <div class="table-wrapper" style="max-height:480px;overflow-y:auto;overflow-x:auto;">
+            <table style="font-size:13px;">
+              <thead>
+                <tr>
+                  <th>明细ID</th>
+                  <th>报工ID</th>
+                  <th>图号</th>
+                  <th>工序</th>
+                  <th>数量</th>
+                  <th>合格数</th>
+                  <th>拆分时间</th>
+                </tr>
+              </thead>
+              <tbody id="relationDetailTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeRelationModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<script src="../assets/base/data.js"></script>
+<script src="../assets/base/index.js"></script>
+<!-- 临时引用原 common.js 以确保功能正常，待完全迁移后可删除 -->
+<script src="../js/common.js"></script>
+<script src="../assets/report-receive/data.js"></script>
+<script src="../assets/report-receive/index.js"></script>
+<script>
+  // Initialize module on load
+  renderReceiveModuleTable();
+</script>
+</body>
+</html>

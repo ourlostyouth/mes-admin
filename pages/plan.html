@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>计划管理 - MES管理系统</title>
+<link rel="stylesheet" href="../assets/base/index.css">
+<style>
+  /* Module page specific: full height, no sidebar offset */
+  html, body {
+    height: 100%;
+    background: #f0f2f5;
+  }
+  .module-content {
+    display: block !important;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+  }
+</style>
+</head>
+<body>
+<div class="module-content">
+
+        <div class="table-container">
+          <div class="table-header">
+            <div class="table-title">生产订单(来自ERP)</div>
+            <div class="table-actions">
+              <input type="text" id="planSearchInput" placeholder="搜索ERP订单号/图号..." oninput="searchPlanData()" style="padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; margin-right: 12px; width: 260px; outline: none;">
+              <button class="btn btn-secondary">导出</button>
+              <button class="btn btn-primary">同步ERP</button>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>生产订单号</th>
+                  <th>ERP订单号</th>
+                  <th>图号(产品号)</th>
+                  <th>产品名称</th>
+                  <th>优先级</th>
+                  <th>计划数量</th>
+                  <th>完成数量</th>
+                  <th>报废数量</th>
+                  <th>完成率</th>
+                  <th>状态</th>
+                  <th>同步时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="planTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      
+</div>
+
+
+<div class="modal-overlay" id="planReportRelationModal">
+  <div class="modal" style="width: 1100px; max-width: 95%;">
+    <div class="modal-header">
+      <div class="modal-title" id="relationModalTitle">计划与报工关联</div>
+      <button class="modal-close" onclick="closeRelationModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+        <!-- 左侧:计划订单信息 -->
+        <div>
+          <div style="margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #e2e8f0;">
+            <div style="font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:8px;">生产订单信息</div>
+            <div id="relationPlanInfo"></div>
+          </div>
+          <div style="margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #e2e8f0;">
+            <div style="font-size:14px;font-weight:600;color:#475569;margin-bottom:8px;">关联的报工记录</div>
+            <div class="table-wrapper" style="max-height:400px;overflow-y:auto;overflow-x:auto;">
+              <table style="font-size:13px;">
+                <thead>
+                  <tr>
+                    <th>报工号</th>
+                    <th>工序</th>
+                    <th>数量</th>
+                    <th>合格数</th>
+                  </tr>
+                </thead>
+                <tbody id="relationReportTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- 右侧:中间子表明细 -->
+        <div>
+          <div style="margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #e2e8f0;">
+            <div style="font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:8px;">系统自动同步明细</div>
+            <div style="font-size:12px;color:#64748b;margin-bottom:8px;">自动拆分的报工明细,实现多对多关系</div>
+          </div>
+          <div class="table-wrapper" style="max-height:480px;overflow-y:auto;overflow-x:auto;">
+            <table style="font-size:13px;">
+              <thead>
+                <tr>
+                  <th>明细ID</th>
+                  <th>报工ID</th>
+                  <th>图号</th>
+                  <th>工序</th>
+                  <th>数量</th>
+                  <th>合格数</th>
+                  <th>拆分时间</th>
+                </tr>
+              </thead>
+              <tbody id="relationDetailTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeRelationModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="manualRelationModal">
+  <div class="modal" style="width: 900px; max-width: 95%;">
+    <div class="modal-header">
+      <div class="modal-title" id="manualRelationTitle">人工关联计划</div>
+      <button class="modal-close" onclick="closeManualRelationModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom: 20px; padding: 15px; background-color: #f0f9ff; border-radius: 8px; border-left: 4px solid #0ea5e9;">
+        <div style="font-size: 14px; color: #0369a1;">
+          <strong>当前记录:</strong> <span id="manualRelationRecord"></span><br>
+          <strong>图号:</strong> <span id="manualRelationDrawingNo"></span>
+        </div>
+      </div>
+
+      <div id="quantityInfo" style="margin-bottom: 16px; padding: 12px; background-color: #fef3c7; border-radius: 6px; border-left: 4px solid #f59e0b; display: none;">
+        <div style="font-size: 13px; color: #92400e;">
+          <strong>数量校验:</strong><br>
+          <span id="quantityDetail"></span>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px;" id="relationListTitle">
+          可关联的生产订单（相同图号）
+        </div>
+        <div class="table-wrapper" style="max-height: 400px; overflow-y: auto; overflow-x: auto;">
+          <table style="font-size: 13px;">
+            <thead>
+              <tr>
+                <th style="width: 50px;">
+                  <input type="checkbox" id="selectAllPlans" onchange="toggleSelectAllPlans(this)">
+                </th>
+                <th>生产订单号</th>
+                <th>ERP订单</th>
+                <th>图号</th>
+                <th>产品名称</th>
+                <th>计划数量</th>
+                <th>完成数量</th>
+                <th>状态</th>
+              </tr>
+            </thead>
+            <tbody id="availablePlansTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeManualRelationModal()">取消</button>
+      <button class="btn btn-primary" onclick="confirmManualRelation()">确认关联</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<script src="../assets/base/data.js"></script>
+<script src="../assets/base/index.js"></script>
+
+<script src="../assets/plan/data.js"></script>
+<script src="../assets/plan/index.js"></script>
+<script>
+  // Initialize module on load
+  renderPlanTable();
+</script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>角色权限 - MES管理系统</title>
+<link rel="stylesheet" href="../assets/base/index.css">
+<style>
+  /* Module page specific: full height, no sidebar offset */
+  html, body {
+    height: 100%;
+    background: #f0f2f5;
+  }
+  .module-content {
+    display: block !important;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+  }
+</style>
+</head>
+<body>
+<div class="module-content">
+
+        <div class="table-container">
+          <div class="table-header">
+            <div class="table-title">角色管理</div>
+            <div class="table-actions">
+              <input type="text" id="roleSearchInput" placeholder="搜索角色名称/编号..." oninput="searchRole()" style="padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; margin-right: 12px; width: 260px; outline: none;">
+              <button class="btn btn-primary" onclick="openRoleModal()" style="font-size:14px;padding:8px 16px;">+ 新增角色</button>
+            </div>
+          </div>
+          <div class="table-wrapper">
+          <table>
+            <thead><tr>
+              <th style="width:120px;">角色编号</th>
+              <th style="width:140px;">角色名称</th>
+              <th style="width:100px;">角色类型</th>
+              <th style="width:80px;">用户数</th>
+              <th style="width:120px;">创建时间</th>
+              <th style="width:80px;">状态</th>
+              <th style="width:200px;">操作</th>
+            </tr></thead>
+            <tbody id="roleTableBody"></tbody>
+          </table>
+          </div>
+        </div>
+      
+</div>
+
+
+<div class="modal-overlay" id="roleModal">
+  <div class="modal" style="width:480px;max-width:95%;">
+    <div class="modal-header">
+      <div class="modal-title" id="roleModalTitle">新增角色</div>
+      <button class="modal-close" onclick="closeRoleModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-form-group">
+        <label>角色名称 <span style="color:#ef4444">*</span></label>
+        <input type="text" id="roleName" placeholder="请输入角色名称">
+      </div>
+      <div class="modal-form-group">
+        <label>角色类型 <span style="color:#ef4444">*</span></label>
+        <select id="roleType">
+          <option value="">请选择类型</option>
+          <option value="系统角色">系统角色</option>
+          <option value="业务角色">业务角色</option>
+          <option value="临时角色">临时角色</option>
+        </select>
+      </div>
+      <div class="modal-form-group">
+        <label>状态</label>
+        <select id="roleStatus">
+          <option value="启用">启用</option>
+          <option value="停用">停用</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeRoleModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveRole()">确定</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="rolePermConfigModal">
+  <div class="modal" style="width:800px;max-width:95%;">
+    <div class="modal-header">
+      <div class="modal-title" id="rolePermConfigTitle">配置权限</div>
+      <button class="modal-close" onclick="closeRolePermConfigModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:16px;padding:12px 16px;background:#f0f9ff;border-radius:10px;border:1px solid #bfdbfe;">
+        <div style="font-size:14px;font-weight:600;color:#1e40af;" id="rolePermConfigRoleName">角色名称</div>
+        <div style="font-size:12px;color:#64748b;margin-top:4px;" id="rolePermConfigRoleType">角色类型</div>
+      </div>
+      <div class="modal-form-group">
+        <label>权限配置 <span style="color:#ef4444">*</span></label>
+        <div class="permission-tree" id="permConfigTree">
+          <!-- 权限树将通过JavaScript动态生成 -->
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeRolePermConfigModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveRolePermConfig()">保存权限</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- 删除确认模态框 -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-body">
+      <div class="delete-confirm-icon">
+        <svg viewBox="0 0 24 24" width="40" height="40" fill="#ef4444"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
+      </div>
+      <div class="delete-confirm-text">确定要删除吗？</div>
+      <div class="delete-confirm-hint" id="deleteConfirmHint">此操作不可恢复</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeDeleteModal()">取消</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">确定删除</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/base/data.js"></script>
+<script src="../assets/base/index.js"></script>
+
+<script src="../assets/role-permission/data.js"></script>
+<script src="../assets/role-permission/index.js"></script>
+<script>
+  // Initialize module on load
+  renderRoleTable();
+</script>
+</body>
+</html>

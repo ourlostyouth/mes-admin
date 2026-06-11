@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>报工报表 - MES管理系统</title>
+<link rel="stylesheet" href="../assets/base/index.css">
+<style>
+  /* Module page specific: full height, no sidebar offset */
+  html, body {
+    height: 100%;
+    background: #f0f2f5;
+  }
+  .module-content {
+    display: block !important;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+  }
+</style>
+</head>
+<body>
+<div class="module-content">
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="processReportTotalOrders">0</div>
+            <div class="stat-label">总订单数</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="processReportTotalQuantity">0</div>
+            <div class="stat-label">总计划数量</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="processReportCompleteQuantity">0</div>
+            <div class="stat-label">总完工数量</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="processReportLossQuantity">0</div>
+            <div class="stat-label">总过损数量</div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div class="table-header">
+            <div class="table-title">报工报表</div>
+            <div class="table-actions">
+              <input type="text" id="processReportSearchInput" placeholder="搜索生产订单号/图号/产品名称..." oninput="searchProcessReport()" style="padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; margin-right: 12px; width: 320px; outline: none;">
+              <button class="btn btn-primary" onclick="exportProcessReport()">导出报表</button>
+              <button class="btn btn-secondary" onclick="renderProcessReportTable()">刷新</button>
+            </div>
+          </div>
+          <div class="table-wrapper" style="overflow-x: auto;">
+            <table id="processReportTable">
+              <thead>
+                <tr>
+                  <th rowspan="2">生产订单号</th>
+                  <th rowspan="2">图号</th>
+                  <th rowspan="2">产品名称</th>
+                  <th rowspan="2">计划数量</th>
+                  <th rowspan="2">总合格</th>
+                  <th rowspan="2">总过损</th>
+                  <th colspan="10" style="background:#dbeafe;color:#1e40af;">工序合格数</th>
+                  <th colspan="10" style="background:#fee2e2;color:#dc2626;">工序过损数</th>
+                  <th rowspan="2">完成率</th>
+                </tr>
+                <tr>
+                  <th>成型</th>
+                  <th>修理</th>
+                  <th>生检</th>
+                  <th>上釉</th>
+                  <th>装车</th>
+                  <th>瓷检</th>
+                  <th>安装</th>
+                  <th>拉力</th>
+                  <th>电检</th>
+                  <th>包装</th>
+                  <th>成型</th>
+                  <th>修理</th>
+                  <th>生检</th>
+                  <th>上釉</th>
+                  <th>装车</th>
+                  <th>瓷检</th>
+                  <th>安装</th>
+                  <th>拉力</th>
+                  <th>电检</th>
+                  <th>包装</th>
+                </tr>
+              </thead>
+              <tbody id="processReportTableBody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      
+</div>
+
+
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<script src="../assets/base/data.js"></script>
+<script src="../assets/base/index.js"></script>
+
+<script src="../assets/process-report/data.js"></script>
+<script src="../assets/process-report/index.js"></script>
+<script>
+  // Initialize module on load
+  renderProcessReportTable();
+</script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>产品管理 - MES管理系统</title>
+<link rel="stylesheet" href="../assets/base/index.css">
+<style>
+  /* Module page specific: full height, no sidebar offset */
+  html, body {
+    height: 100%;
+    background: #f0f2f5;
+  }
+  .module-content {
+    display: block !important;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+  }
+</style>
+</head>
+<body>
+<div class="module-content">
+
+        <div class="table-container">
+          <div class="table-header">
+            <div class="table-title">产品列表</div>
+            <div class="table-actions">
+              <input type="text" id="prodSearchInput" placeholder="搜索图号/产品名称..." oninput="searchProduct()" style="padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; margin-right: 12px; width: 240px; outline: none;">
+              <button class="btn btn-primary" onclick="openProductModal()">新增产品</button>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>图号</th>
+                  <th>产品名称</th>
+                  <th>产品型号</th>
+                  <th>规格型号</th>
+                  <th>重量(kg)</th>
+                  <th>釉色</th>
+                  <th>钢帽型号</th>
+                  <th>钢脚型号</th>
+                  <th>单位</th>
+                  <th>版本</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="productTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      
+</div>
+
+
+<div class="modal-overlay" id="productModal">
+  <div class="modal" style="width:600px;max-width:95%;">
+    <div class="modal-header">
+      <div class="modal-title" id="productModalTitle">新增产品</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-form-group">
+        <label>图号 <span style="color:#ef4444">*</span></label>
+        <input type="text" id="prodNo" placeholder="请输入图号">
+      </div>
+      <div class="modal-form-group">
+        <label>产品名称 <span style="color:#ef4444">*</span></label>
+        <input type="text" id="prodName" placeholder="请输入产品名称">
+      </div>
+      <div class="modal-form-group">
+        <label>产品型号</label>
+        <input type="text" id="prodCategory" placeholder="请输入产品型号">
+      </div>
+      <div class="modal-form-group">
+        <label>规格型号</label>
+        <input type="text" id="prodSpec" placeholder="请输入规格型号">
+      </div>
+      <div class="modal-form-group">
+        <label>产品重量 (kg)</label>
+        <input type="number" id="prodWeight" placeholder="请输入重量（千克）" min="0" step="0.01">
+      </div>
+      <div class="modal-form-group">
+        <label>产品釉色</label>
+        <select id="prodColor">
+          <option value="">请选择</option>
+          <option value="灰色">灰色</option>
+          <option value="棕色">棕色</option>
+        </select>
+      </div>
+      <div class="modal-form-group">
+        <label>钢帽型号</label>
+        <input type="text" id="prodCapModel" placeholder="请输入钢帽型号">
+      </div>
+      <div class="modal-form-group">
+        <label>钢脚型号</label>
+        <input type="text" id="prodFootModel" placeholder="请输入钢脚型号">
+      </div>
+      <div class="modal-form-group">
+        <label>单位</label>
+        <input type="text" id="prodUnit" placeholder="如：个、件、套">
+      </div>
+      <div class="modal-form-group">
+        <label>版本</label>
+        <input type="text" id="prodVersion" placeholder="如：V1.0">
+      </div>
+      <div class="modal-form-group">
+        <label>状态</label>
+        <select id="prodStatus">
+          <option value="启用">启用</option>
+          <option value="停用">停用</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeProductModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveProduct()">确定</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- 删除确认模态框 -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-body">
+      <div class="delete-confirm-icon">
+        <svg viewBox="0 0 24 24" width="40" height="40" fill="#ef4444"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
+      </div>
+      <div class="delete-confirm-text">确定要删除吗？</div>
+      <div class="delete-confirm-hint" id="deleteConfirmHint">此操作不可恢复</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeDeleteModal()">取消</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">确定删除</button>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/base/data.js"></script>
+<script src="../assets/base/index.js"></script>
+
+<script src="../assets/product/data.js"></script>
+<script src="../assets/product/index.js"></script>
+<script>
+  // Initialize module on load
+  renderProductTable();
+</script>
+</body>
+</html>

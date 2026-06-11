@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>组织架构 - MES管理系统</title>
+<link rel="stylesheet" href="../assets/base/index.css">
+<style>
+  /* Module page specific: full height, no sidebar offset */
+  html, body {
+    height: 100%;
+    background: #f0f2f5;
+  }
+  .module-content {
+    display: block !important;
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+  }
+</style>
+</head>
+<body>
+<div class="module-content">
+
+        <div class="split-layout">
+          <div class="split-left">
+            <div class="split-left-header">
+              <div class="split-left-title">组织架构</div>
+              <button class="btn btn-primary" onclick="openOrgModal()" style="font-size:12px;padding:6px 12px;">+ 新增部门</button>
+            </div>
+            <div class="split-left-body" id="orgTreeContainer"></div>
+          </div>
+          <div class="split-right">
+            <div class="split-right-header" style="padding:12px 24px;">
+              <div class="tab-nav" id="orgTabNav" style="margin-bottom:0;border-bottom:none;">
+                <div class="tab-item active" onclick="switchOrgTab('dept')">部门列表</div>
+                <div class="tab-item" onclick="switchOrgTab('pos')">岗位列表</div>
+              </div>
+              <div class="toolbar-group" id="orgToolbarBtns">
+                <button class="btn-sm btn-sm-primary" onclick="openOrgModal()">+ 新增部门</button>
+              </div>
+            </div>
+            <div class="split-right-body" style="padding:0 24px 20px;">
+              <!-- 搜索栏 -->
+              <div class="search-toolbar" id="orgSearchBar">
+                <input type="text" class="form-input-sm" id="orgSearchName" placeholder="部门名称" oninput="searchOrgData()">
+                <input type="text" class="form-input-sm" id="orgSearchLeader" placeholder="负责人" oninput="searchOrgData()">
+                <button class="btn-sm btn-sm-primary" onclick="searchOrgData()">搜索</button>
+                <button class="btn-sm btn-sm-secondary" onclick="resetOrgSearch()">重置</button>
+              </div>
+              <!-- 部门表格 -->
+              <div id="orgDeptPanel">
+                <div style="overflow-x:auto;">
+                  <table>
+                    <thead><tr>
+                      <th style="width:130px;">部门编号</th>
+                      <th>部门名称</th>
+                      <th>上级部门</th>
+                      <th>负责人</th>
+                      <th style="width:80px;">人数</th>
+                      <th>联系电话</th>
+                      <th style="width:120px;">创建时间</th>
+                      <th style="width:200px;">操作</th>
+                    </tr></thead>
+                    <tbody id="orgDeptTableBody"></tbody>
+                  </table>
+                </div>
+                <div class="pagination" id="orgDeptPagination">
+                  <div class="pagination-info" id="orgDeptPageInfo">共 0 条</div>
+                  <div class="pagination-controls" id="orgDeptPageCtrl"></div>
+                </div>
+              </div>
+              <!-- 岗位面板 -->
+              <div id="orgPosPanel" style="display:none;">
+                <div style="overflow-x:auto;">
+                  <table>
+                    <thead><tr>
+                      <th style="width:130px;">岗位编号</th>
+                      <th>岗位名称</th>
+                      <th>所属部门</th>
+                      <th style="width:100px;">岗位类别</th>
+                      <th style="width:80px;">状态</th>
+                      <th style="width:180px;">操作</th>
+                    </tr></thead>
+                    <tbody id="orgPosTableBody"></tbody>
+                  </table>
+                </div>
+                <div class="pagination" id="orgPosPagination">
+                  <div class="pagination-info" id="orgPosPageInfo">共 0 条</div>
+                  <div class="pagination-controls" id="orgPosPageCtrl"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+</div>
+
+
+<div class="modal-overlay" id="orgModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="orgModalTitle">新增部门</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-form-group">
+        <label>部门名称 <span style="color:#ef4444">*</span></label>
+        <input type="text" id="orgName" placeholder="请输入部门名称">
+      </div>
+      <div class="modal-form-group">
+        <label>负责人 <span style="color:#ef4444">*</span></label>
+        <input type="text" id="orgLeader" placeholder="请输入负责人姓名">
+      </div>
+      <div class="modal-form-group">
+        <label>部门人数</label>
+        <input type="number" id="orgPeople" placeholder="请输入部门人数" value="0">
+      </div>
+      <div class="modal-form-group">
+        <label>联系电话</label>
+        <input type="text" id="orgPhone" placeholder="请输入联系电话">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeOrgModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveOrg()">确定</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="posModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="posModalTitle">新增岗位</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-form-group">
+        <label>岗位名称 <span style="color:#ef4444">*</span></label>
+        <input type="text" id="posName" placeholder="请输入岗位名称">
+      </div>
+      <div class="modal-form-group">
+        <label>所属部门 <span style="color:#ef4444">*</span></label>
+        <select id="posDepartment">
+          <option value="">请选择部门</option>
+          <option value="生产部">生产部</option>
+          <option value="成型车间">成型车间</option>
+          <option value="质检部">质检部</option>
+          <option value="瓷检车间">瓷检车间</option>
+        </select>
+      </div>
+      <div class="modal-form-group">
+        <label>岗位类别 <span style="color:#ef4444">*</span></label>
+        <select id="posType">
+          <option value="">请选择类别</option>
+          <option value="操作岗">操作岗</option>
+          <option value="质检岗">质检岗</option>
+          <option value="技术岗">技术岗</option>
+          <option value="管理岗">管理岗</option>
+        </select>
+      </div>
+      <div class="modal-form-group">
+        <label>状态</label>
+        <select id="posStatus">
+          <option value="启用">启用</option>
+          <option value="停用">停用</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closePosModal()">取消</button>
+      <button class="btn btn-primary" onclick="savePos()">确定</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-body">
+      <div class="delete-confirm-icon">
+        <svg viewBox="0 0 24 24" width="40" height="40" fill="#ef4444"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
+      </div>
+      <div class="delete-confirm-text">确定要删除吗？</div>
+      <div class="delete-confirm-hint" id="deleteConfirmHint">此操作不可恢复</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeDeleteModal()">取消</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">确定删除</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="memberModal">
+  <div class="modal" style="width: 900px; max-width: 95%;">
+    <div class="modal-header">
+      <div class="modal-title" id="memberModalTitle">部门人员</div>
+    </div>
+    <div class="modal-body">
+      <div class="table-actions" style="margin-bottom: 16px;">
+        <input type="text" id="memberSearchInput" placeholder="搜索人员..." oninput="searchMember()" style="padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; width: 240px; outline: none;">
+        <button class="btn btn-primary" onclick="openAddMemberModal()">添加人员</button>
+      </div>
+      <table style="width: 100%; table-layout: fixed;">
+        <thead>
+          <tr>
+            <th style="width: 15%;">姓名</th>
+            <th style="width: 20%;">岗位</th>
+            <th style="width: 25%;">联系电话</th>
+            <th style="width: 15%;">状态</th>
+            <th style="width: 25%;">操作</th>
+          </tr>
+        </thead>
+        <tbody id="memberTableBody">
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeMemberModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="addMemberModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="addMemberModalTitle">添加人员</div>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="currentDepartmentId">
+      <div class="modal-form-group">
+        <label>姓名 <span style="color:#ef4444">*</span></label>
+        <input type="text" id="memberName" placeholder="请输入姓名">
+      </div>
+      <div class="modal-form-group">
+        <label>岗位 <span style="color:#ef4444">*</span></label>
+        <input type="text" id="memberPosition" placeholder="请输入岗位">
+      </div>
+      <div class="modal-form-group">
+        <label>联系电话</label>
+        <input type="text" id="memberPhone" placeholder="请输入联系电话">
+      </div>
+      <div class="modal-form-group">
+        <label>邮箱</label>
+        <input type="email" id="memberEmail" placeholder="请输入邮箱">
+      </div>
+      <div class="modal-form-group">
+        <label>状态</label>
+        <select id="memberStatus">
+          <option value="在职">在职</option>
+          <option value="离职">离职</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeAddMemberModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveMember()">确定</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<script src="../assets/base/data.js"></script>
+<script src="../assets/base/index.js"></script>
+<script src="../assets/organization/data.js"></script>
+<script src="../assets/organization/index.js"></script>
+
+<script>
+  // Initialize module on load
+  renderOrgTree();
+</script>
+</body>
+</html>
